@@ -33,4 +33,23 @@ const PORT = process.env.PORT || 5000;
  */
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Setup cron job to keep server alive
+  if (process.env.NODE_ENV === "production") {
+    const keepAliveUrl = process.env.BASE_URL
+      ? `${process.env.BASE_URL}/api/sweets`
+      : `http://localhost:${PORT}/api/sweets`;
+
+    cron.schedule("*/12 * * * *", async () => {
+      try {
+        console.log("ending keep-alive request...");
+        const response = await axios.get(keepAliveUrl);
+        console.log(`Keep-alive successful: ${response.status}`);
+      } catch (error:any) {
+        console.log("Keep-alive request failed:", error.message);
+      }
+    });
+
+    console.log("Keep-alive cron job scheduled (every 12 minutes)");
+  }
 });
