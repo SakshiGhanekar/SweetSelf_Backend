@@ -8,6 +8,8 @@
 
 import express from "express";
 import cors from "cors";
+import authRoutes from "./routes/auth/auth.routes.js";
+import sweetRoutes from "./routes/sweets/sweet.routes.js";
 
 const app = express();
 
@@ -31,5 +33,11 @@ app.use(express.json());
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
+
+/**
+ * Mount API routes
+ */
+app.use("/api/auth", authRoutes);
+app.use("/api/sweets", sweetRoutes);
 
 export default app;
